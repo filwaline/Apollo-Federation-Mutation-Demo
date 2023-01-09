@@ -1,0 +1,45 @@
+schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"]) {
+  query: Query
+  mutation: Mutation
+}
+
+input AddProductInput {
+  upc: String!
+  name: String!
+  price: Int!
+  weight: Int!
+}
+
+type Mutation {
+  product: ProductMutation!
+}
+
+type Product @key(fields: "upc") @shareable {
+  upc: String!
+  name: String!
+  price: Int!
+  weight: Int!
+}
+
+type ProductMutation {
+  add(input: AddProductInput!): Product!
+}
+
+type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+  findProducts(upcs: [String!]!): [Product!]!
+}
+
+type ReviewMutation @key(fields: "productId") {
+  productId: String!
+  product: Product
+}
+
+scalar _Any
+
+union _Entity = Product | ReviewMutation
+
+type _Service {
+  sdl: String!
+}

@@ -1,0 +1,46 @@
+schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@external", "@key", "@requires"]) {
+  query: Query
+  mutation: Mutation
+}
+
+type Mutation {
+  review(productId: String!): ReviewMutation!
+}
+
+type Product @key(fields: "upc") {
+  upc: String!
+  reviews: [Review!]!
+}
+
+type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+  findReviews(ids: [String!]!): [Review!]!
+}
+
+type Review @key(fields: "id") {
+  id: String!
+  body: String!
+  author: User!
+  product: Product!
+}
+
+type ReviewMutation @key(fields: "productId") {
+  productId: String!
+  product: Product @external
+  currentUser: User @external
+  comment(body: String!): Review! @requires(fields: "product{upc} currentUser{id}")
+}
+
+type User @key(fields: "id") {
+  id: String!
+  reviews: [Review!]!
+}
+
+scalar _Any
+
+union _Entity = Product | User | ReviewMutation | Review
+
+type _Service {
+  sdl: String!
+}

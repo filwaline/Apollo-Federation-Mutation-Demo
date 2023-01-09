@@ -1,0 +1,122 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.2", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__field(graph: join__Graph!, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+input AddProductInput
+  @join__type(graph: PRODUCTS)
+{
+  upc: String!
+  name: String!
+  price: Int!
+  weight: Int!
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  ACCOUNTS @join__graph(name: "accounts", url: "http://accounts:4001/graphql")
+  INVENTORY @join__graph(name: "inventory", url: "http://inventory:4002/graphql")
+  PRODUCTS @join__graph(name: "products", url: "http://products:4003/graphql")
+  REVIEWS @join__graph(name: "reviews", url: "http://reviews:4004/graphql")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Mutation
+  @join__type(graph: ACCOUNTS)
+  @join__type(graph: PRODUCTS)
+  @join__type(graph: REVIEWS)
+{
+  login(username: String!): User! @join__field(graph: ACCOUNTS)
+  product: ProductMutation! @join__field(graph: PRODUCTS)
+  review(productId: String!): ReviewMutation! @join__field(graph: REVIEWS)
+}
+
+type Product
+  @join__type(graph: INVENTORY, key: "upc")
+  @join__type(graph: PRODUCTS, key: "upc")
+  @join__type(graph: REVIEWS, key: "upc")
+{
+  upc: String!
+  weight: Int! @join__field(graph: INVENTORY, external: true) @join__field(graph: PRODUCTS)
+  price: Int! @join__field(graph: INVENTORY, external: true) @join__field(graph: PRODUCTS)
+  shippingEstimate: Int @join__field(graph: INVENTORY, requires: "weight price")
+  inStock: Boolean! @join__field(graph: INVENTORY)
+  name: String! @join__field(graph: PRODUCTS)
+  reviews: [Review!]! @join__field(graph: REVIEWS)
+}
+
+type ProductMutation
+  @join__type(graph: PRODUCTS)
+{
+  add(input: AddProductInput!): Product!
+}
+
+type Query
+  @join__type(graph: ACCOUNTS)
+  @join__type(graph: INVENTORY)
+  @join__type(graph: PRODUCTS)
+  @join__type(graph: REVIEWS)
+{
+  me: User! @join__field(graph: ACCOUNTS)
+  Hi: String! @join__field(graph: INVENTORY)
+  findProducts(upcs: [String!]!): [Product!]! @join__field(graph: PRODUCTS)
+  findReviews(ids: [String!]!): [Review!]! @join__field(graph: REVIEWS)
+}
+
+type Review
+  @join__type(graph: REVIEWS, key: "id")
+{
+  id: String!
+  body: String!
+  author: User!
+  product: Product!
+}
+
+type ReviewMutation
+  @join__type(graph: ACCOUNTS, key: "productId")
+  @join__type(graph: PRODUCTS, key: "productId")
+  @join__type(graph: REVIEWS, key: "productId")
+{
+  productId: String!
+  currentUser: User @join__field(graph: ACCOUNTS) @join__field(graph: REVIEWS, external: true)
+  product: Product @join__field(graph: PRODUCTS) @join__field(graph: REVIEWS, external: true)
+  comment(body: String!): Review! @join__field(graph: REVIEWS, requires: "product{upc} currentUser{id}")
+}
+
+type User
+  @join__type(graph: ACCOUNTS, key: "id")
+  @join__type(graph: REVIEWS, key: "id")
+{
+  id: String!
+  name: String @join__field(graph: ACCOUNTS)
+  username: String @join__field(graph: ACCOUNTS)
+  birthDate: String @join__field(graph: ACCOUNTS)
+  reviews: [Review!]! @join__field(graph: REVIEWS)
+}

@@ -1,0 +1,67 @@
+version: "3.3"
+
+services:
+  apollo-router:
+    image: ghcr.io/apollographql/router:v1.5.0
+    volumes:
+      - type: bind
+        source: ./apollo-router
+        target: /apollo-router
+    environment:
+      - APOLLO_ROUTER_SUPERGRAPH_PATH=/apollo-router/supergraph.graphql
+      - APOLLO_ROUTER_CONFIG_PATH=/apollo-router/router.yaml
+      - APOLLO_ROUTER_HOT_RELOAD=true
+    ports:
+      - 4000:4000
+
+  accounts:
+    container_name: accounts
+    build:
+      dockerfile: ./services/accounts/dockerfile
+      context: .
+    volumes:
+      - type: bind
+        source: ./services/accounts
+        target: /accounts
+    entrypoint: uvicorn accounts.main:app --reload --port 4001 --host 0.0.0.0
+    ports:
+      - 4001:4001
+
+  inventory:
+    container_name: inventory
+    build:
+      dockerfile: ./services/inventory/dockerfile
+      context: .
+    volumes:
+      - type: bind
+        source: ./services/inventory
+        target: /inventory
+    entrypoint: uvicorn inventory.main:app --reload --port 4002 --host 0.0.0.0
+    ports:
+      - 4002:4002
+
+  products:
+    container_name: products
+    build:
+      dockerfile: ./services/products/dockerfile
+      context: .
+    volumes:
+      - type: bind
+        source: ./services/products
+        target: /products
+    entrypoint: uvicorn products.main:app --reload --port 4003 --host 0.0.0.0
+    ports:
+      - 4003:4003
+
+  reviews:
+    container_name: reviews
+    build:
+      dockerfile: ./services/reviews/dockerfile
+      context: .
+    volumes:
+      - type: bind
+        source: ./services/reviews
+        target: /reviews
+    entrypoint: uvicorn reviews.main:app --reload --port 4004 --host 0.0.0.0
+    ports:
+      - 4004:4004

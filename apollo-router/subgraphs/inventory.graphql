@@ -1,0 +1,25 @@
+schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@external", "@key", "@requires", "@shareable"]) {
+  query: Query
+}
+
+type Product @key(fields: "upc") @shareable {
+  upc: String!
+  weight: Int! @external
+  price: Int! @external
+  shippingEstimate: Int @requires(fields: "weight price")
+  inStock: Boolean!
+}
+
+type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+  Hi: String!
+}
+
+scalar _Any
+
+union _Entity = Product
+
+type _Service {
+  sdl: String!
+}

@@ -1,0 +1,34 @@
+schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"]) {
+  query: Query
+  mutation: Mutation
+}
+
+type Mutation {
+  login(username: String!): User!
+}
+
+type Query {
+  _entities(representations: [_Any!]!): [_Entity]!
+  _service: _Service!
+  me: User!
+}
+
+type ReviewMutation @key(fields: "productId") {
+  productId: String!
+  currentUser: User
+}
+
+type User @key(fields: "id") {
+  id: String!
+  name: String
+  username: String
+  birthDate: String
+}
+
+scalar _Any
+
+union _Entity = User | ReviewMutation
+
+type _Service {
+  sdl: String!
+}

@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "apollo-federation-mutation-demo"
+version = "0.1.0"
+description = ""
+authors = ["filwaline <skywalker950925@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "apollo_federation_mutation_demo"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+accounts = {path="./services/accounts", develop=true}
+inventory = {path="./services/inventory", develop=true}
+products = {path="./services/products", develop=true}
+reviews = {path="./services/reviews", develop=true}
+fastapi = "^0.88.0"
+strawberry-graphql = {extras = ["cli", "debug-server", "fastapi"], version = "^0.151.2"}
+dataclass-mapper = "^1.5.1"
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.8.0"
+pytest = "^7.2.0"
+pytest-asyncio = "^0.20.3"
+pytest-cov = "^4.0.0"
+pytest-sugar = "^0.9.6"
+pytest-icdiff = "^0.6"
+black = "^22.12.0"
+pre-commit = "^2.21.0"
+pyclean = "^2.2.0"
+devtools = "^0.10.0"
+faker = "^15.3.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
