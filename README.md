@@ -1,9 +1,7 @@
 # Apollo Federation Mutation Demo
 
 
-This repository is a demo of apollo federation, focus on **federated mutation** over multiple services.
-
-**federated mutation** is a mutation that can fetch data from external services(handle by apollo-router), rather than execute mutation distribute over mulpitle services.
+This repository is a demonstration of using Apollo Federation with the Python library [Strawberry-GraphQL](https://strawberry.rocks/) for handling mutation that access data from external services/subgraphs.
 
 ```graphql
 type ReviewMutation @key(fields: "productId") {
@@ -17,9 +15,13 @@ type Mutation {
   review(productId: String!): ReviewMutation!
 }
 ```
-`comment` is a mutation that can fetch product.upc(from products subgarph) and currentUser.id(from accounts subgraph), so `comment` won't create a inconsistent review.
 
-And the price is, you will have to provide external key (such as `productId`) early, rather then pack them into a single input type of `comment`.
+Included in the project is an example mutation, `comment`, that demonstrates how to fetch data from external services (*product.upc* from the products subgraph and *currentUser.id* from the accounts subgraph) in order to ensure consistency of the review. 
+
+Note that this approach requires the external key (such as productId) to be provided earlier in the mutation rather than packed into a single input type. 
+
+An example mutation query is provided for reference.
+
 
 ```graphql
 mutation ExampleMutation($productId: String!, $body: String!) {
@@ -31,22 +33,27 @@ mutation ExampleMutation($productId: String!, $body: String!) {
 }
 ```
 
+# Setup
+1. Clone the repository
+2. Start the services: `docker-compose up`
+3. Access the sandbox at `http://localhost:4000`
+
+Note: If you make any changes to Strawberry's schema, please run `bash ./apollo-router/supergraph_compose.sh` to update the `*.graphql` files.
+
+
+
 ---
 
-You may run this project with `docker compose up` and landing sandbox at `http://localhost:4000`
+For reference, the implementation of the `ReviewMutation` can be found in the following files:
 
-This project written with python libary [strawberry-graphql](https://strawberry.rocks/)
+- orders subgraph:
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L19-L35
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L45-L62
+- accounts subgraph:
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/accounts/accounts/stubs.py#L9-L15
+- products subgraph:
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/products/products/stubs.py#L9-L17
+  
+Please take a look at the above links for more information about how the code works.
 
-If you make any changes to strawberry's schema, please run `bash ./apollo-router/supergraph_compose.sh` to update *.graphql files.
 
-
----
-
-`ReviewMutation` Reference:
-  - orders subgraph
-    - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L19-L35
-    - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L45-L62
-  - accounts subgraph
-    - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/accounts/accounts/stubs.py#L9-L15
-  - products subgraph
-    - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/products/products/stubs.py#L9-L17
