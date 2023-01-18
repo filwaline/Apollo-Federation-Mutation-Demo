@@ -64,10 +64,10 @@ type Product
   @join__type(graph: REVIEWS, key: "upc")
 {
   upc: String!
+  inStock: Boolean! @join__field(graph: INVENTORY)
   weight: Int! @join__field(graph: INVENTORY, external: true) @join__field(graph: PRODUCTS)
   price: Int! @join__field(graph: INVENTORY, external: true) @join__field(graph: PRODUCTS)
   shippingEstimate: Int @join__field(graph: INVENTORY, requires: "weight price")
-  inStock: Boolean! @join__field(graph: INVENTORY)
   name: String! @join__field(graph: PRODUCTS)
   reviews: [Review!]! @join__field(graph: REVIEWS)
 }

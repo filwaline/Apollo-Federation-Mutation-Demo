@@ -4,10 +4,10 @@ schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@externa
 
 type Product @key(fields: "upc") @shareable {
   upc: String!
+  inStock: Boolean!
   weight: Int! @external
   price: Int! @external
   shippingEstimate: Int @requires(fields: "weight price")
-  inStock: Boolean!
 }
 
 type Query {
