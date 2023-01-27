@@ -105,8 +105,8 @@ type ReviewMutation
   @join__type(graph: REVIEWS, key: "productId")
 {
   productId: String!
-  currentUser: User @join__field(graph: ACCOUNTS) @join__field(graph: REVIEWS, external: true)
-  product: Product @join__field(graph: PRODUCTS) @join__field(graph: REVIEWS, external: true)
+  currentUser: User! @join__field(graph: ACCOUNTS) @join__field(graph: REVIEWS, external: true)
+  product: Product! @join__field(graph: PRODUCTS) @join__field(graph: REVIEWS, external: true)
   comment(body: String!): Review! @join__field(graph: REVIEWS, requires: "product{upc} currentUser{id}")
 }
 

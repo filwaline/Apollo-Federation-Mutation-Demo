@@ -25,7 +25,9 @@ class ProductRepository:
         return [map_to(p, Product) for p in self.DATA.values()]
 
     def get(self, upc):
-        return map_to(self.DATA[upc], Product)
+        if upc in self.DATA:
+            return map_to(self.DATA[upc], Product)
+        return None
 
     def add(self, p: Product):
         if p.upc not in self.DATA:

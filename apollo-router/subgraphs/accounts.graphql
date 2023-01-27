@@ -15,7 +15,7 @@ type Query {
 
 type ReviewMutation @key(fields: "productId") {
   productId: String!
-  currentUser: User
+  currentUser: User!
 }
 
 type User @key(fields: "id") {

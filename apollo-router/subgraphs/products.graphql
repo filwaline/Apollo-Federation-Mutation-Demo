@@ -33,7 +33,7 @@ type Query {
 
 type ReviewMutation @key(fields: "productId") {
   productId: String!
-  product: Product
+  product: Product!
 }
 
 scalar _Any

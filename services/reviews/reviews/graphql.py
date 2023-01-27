@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List
 
 import strawberry
 from strawberry.types import Info
-
-# from .stubs import User, Product
 
 
 @strawberry.federation.type(keys=["id"])
@@ -19,15 +17,11 @@ class Review:
 @strawberry.federation.type(keys=["productId"])
 class ReviewMutation:
     productId: str
-    product: Optional[Product] = strawberry.federation.field(external=True)
-    currentUser: Optional[User] = strawberry.federation.field(external=True)
+    product: Product = strawberry.federation.field(external=True, default=None)
+    currentUser: User = strawberry.federation.field(external=True, default=None)
 
     @strawberry.federation.mutation(requires=["product{upc} currentUser{id}"])
     def comment(self, info: Info, body: str) -> Review:
-        if not self.product:
-            raise ValueError("Product Not Found.")
-        if not self.currentUser:
-            raise ValueError("Unauthenticed User Can Not Comment.")
 
         review = info.context.repo.comment(
             body=body, product=self.product, author=self.currentUser
@@ -55,11 +49,7 @@ class Mutation:
                 - package.products.stubs.ReviewMutation
                 - package.accounts.stubs.ReviewMutation
         """
-        return ReviewMutation(
-            productId=productId,
-            product=None,  # placeholder
-            currentUser=None,  # placeholder: this value doesn't matter, it resolve at other subgraph
-        )
+        return ReviewMutation(productId=productId)
 
 
 from .stubs import Product, User
