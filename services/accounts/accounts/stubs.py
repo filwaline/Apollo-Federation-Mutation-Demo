@@ -1,5 +1,3 @@
-from typing import Optional
-
 import strawberry
 from strawberry.types import Info
 
@@ -11,5 +9,8 @@ class ReviewMutation:
     productId: str
 
     @strawberry.federation.field
-    def currentUser(self, info: Info) -> Optional[User]:
-        return info.context.repo.get_current_user()
+    def currentUser(self, info: Info) -> User:
+        user = info.context.repo.get_current_user()
+        if user == None:
+            raise ValueError("Unauthenticed User.")
+        return user

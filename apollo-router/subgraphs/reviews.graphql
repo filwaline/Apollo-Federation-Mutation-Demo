@@ -27,8 +27,8 @@ type Review @key(fields: "id") {
 
 type ReviewMutation @key(fields: "productId") {
   productId: String!
-  product: Product @external
-  currentUser: User @external
+  product: Product! @external
+  currentUser: User! @external
   comment(body: String!): Review! @requires(fields: "product{upc} currentUser{id}")
 }
 
