@@ -48,12 +48,12 @@ Note: If you make any changes to Strawberry's schema, please run `bash ./apollo-
 For reference, the implementation of the `ReviewMutation` can be found in the following files:
 
 - orders subgraph:
-  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L19-L35
-  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L45-L62
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L17-L29
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/reviews/reviews/graphql.py#L39-L52
 - accounts subgraph:
-  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/accounts/accounts/stubs.py#L9-L15
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/accounts/accounts/stubs.py#L7-L16
 - products subgraph:
-  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/products/products/stubs.py#L9-L17
+  - https://github.com/filwaline/Apollo-Federation-Mutation-Demo/blob/main/services/products/products/stubs.py#L7-L16
 
 Please take a look at the above links for more information about how the code works.
 
